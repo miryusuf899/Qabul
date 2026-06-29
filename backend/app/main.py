@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.routers import auth
 
 
 def create_app() -> FastAPI:
@@ -24,6 +25,8 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["health"])
     async def health_check() -> dict[str, str]:
         return {"status": "ok"}
+
+    app.include_router(auth.router, prefix="/api/v1")
 
     return app
 
