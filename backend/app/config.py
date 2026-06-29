@@ -6,6 +6,15 @@ from typing import Annotated
 from pydantic import AnyUrl, BeforeValidator, Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 
 def _split_origins(value: str | list[str]) -> list[str]:
     if isinstance(value, list):
@@ -19,7 +28,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 1440
     cors_origins: Annotated[list[str], NoDecode, BeforeValidator(_split_origins)] = Field(
-        default_factory=lambda: ["http://localhost:5173"]
+        default_factory=lambda: DEFAULT_CORS_ORIGINS.copy()
     )
     ai_provider: str = "mock"
     gemini_api_key: str | None = None
