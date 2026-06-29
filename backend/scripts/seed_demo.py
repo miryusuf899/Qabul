@@ -10,7 +10,7 @@ from app.db import AsyncSessionLocal
 from app.models import Business, Service, Staff, StaffService, User, UserRole, WorkingHour
 from app.services.password_service import hash_password
 
-OWNER_EMAIL = "owner@qabul.test"
+OWNER_EMAIL = "owner@example.com"
 OWNER_PASSWORD = "password123"
 
 

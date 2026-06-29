@@ -38,7 +38,7 @@ python -m scripts.seed_demo
 Default demo owner:
 
 ```text
-email: owner@qabul.test
+email: owner@example.com
 password: password123
 ```
 
