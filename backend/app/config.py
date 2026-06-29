@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     telegram_bot_token: str | None = None
     default_business_id: int = 1
+    backend_api_url: str = "http://localhost:8000/api/v1"
     timezone: str = "Asia/Dushanbe"
 
     model_config = SettingsConfigDict(

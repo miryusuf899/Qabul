@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import auth, businesses, clients, services, staff, working_hours
+from app.routers import ai, auth, bookings, businesses, clients, dashboard, services, staff, working_hours
 
 
 def create_app() -> FastAPI:
@@ -32,6 +32,9 @@ def create_app() -> FastAPI:
     app.include_router(staff.router, prefix="/api/v1")
     app.include_router(working_hours.router, prefix="/api/v1")
     app.include_router(clients.router, prefix="/api/v1")
+    app.include_router(bookings.router, prefix="/api/v1")
+    app.include_router(dashboard.router, prefix="/api/v1")
+    app.include_router(ai.router, prefix="/api/v1")
 
     return app
 
