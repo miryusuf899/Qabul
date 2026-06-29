@@ -20,6 +20,15 @@ API docs:
 http://localhost:8000/docs
 ```
 
+## Test
+
+```bash
+cd backend
+pytest
+```
+
+The test suite uses SQLite in memory and checks the main MVP flow: auth, business setup, service/staff setup, working hours, bookings, dashboard summary and mock AI confirmation.
+
 ## Seed demo data
 
 ```bash

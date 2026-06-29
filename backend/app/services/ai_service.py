@@ -33,7 +33,7 @@ class ParsedBookingIntent:
 
 def _norm(value: str) -> str:
     value = value.lower().replace("ё", "е")
-    value = re.sub(r"[^a-zа-я0-9:+ ]+", " ", value)
+    value = re.sub(r"[^a-zа-я0-9:+./ -]+", " ", value)
     return re.sub(r"\s+", " ", value).strip()
 
 
