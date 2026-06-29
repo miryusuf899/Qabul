@@ -1,12 +1,18 @@
+import { useRef } from 'react'
+
+import { useGsapMotion } from '../../animations/useGsapMotion.js'
 import { LanguageSwitcher } from '../layout/LanguageSwitcher.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 
 export function AuthFrame({ title, description, children }) {
   const { t } = useLanguage()
+  const scope = useRef(null)
+
+  useGsapMotion(scope, [])
 
   return (
-    <main className="relative grid min-h-[100dvh] overflow-hidden px-4 py-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-5 lg:p-5">
-      <section className="relative hidden min-h-[calc(100dvh-2.5rem)] overflow-hidden rounded-[2rem] bg-[#121f19] p-7 text-white shadow-[0_28px_110px_rgba(23,33,29,0.24)] lg:flex">
+    <main ref={scope} className="auth-frame relative grid min-h-[100dvh] overflow-hidden px-4 py-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-5 lg:p-5">
+      <section data-gsap="card" className="auth-hero-panel relative hidden min-h-[calc(100dvh-2.5rem)] overflow-hidden rounded-[2rem] bg-[#121f19] p-7 text-white shadow-[0_28px_110px_rgba(23,33,29,0.24)] lg:flex">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-28 top-20 size-96 rounded-full bg-qabul-leaf/25 blur-3xl" />
           <div className="absolute bottom-10 right-0 size-80 rounded-full bg-white/[0.08] blur-3xl" />
@@ -14,7 +20,7 @@ export function AuthFrame({ title, description, children }) {
         </div>
 
         <div className="relative z-10 flex w-full flex-col">
-          <div className="flex items-center justify-between">
+          <div data-gsap="fade-up" className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="grid size-12 place-items-center rounded-2xl bg-white text-xl font-black text-qabul-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
                 Q
@@ -41,8 +47,9 @@ export function AuthFrame({ title, description, children }) {
               <div className="mt-10 grid gap-3">
                 {t('auth.benefits').map(([titleText, body]) => (
                   <div
+                    data-scroll-reveal
                     key={titleText}
-                    className="rounded-[1.25rem] bg-white/[0.075] p-4 ring-1 ring-white/10 transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:translate-x-1 hover:bg-white/[0.105]"
+                    className="premium-hover rounded-[1.25rem] bg-white/[0.075] p-4 ring-1 ring-white/10 transition duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:translate-x-1 hover:bg-white/[0.105]"
                   >
                     <p className="text-sm font-bold">{titleText}</p>
                     <p className="mt-1 text-xs leading-5 text-white/50">{body}</p>
@@ -52,7 +59,7 @@ export function AuthFrame({ title, description, children }) {
             </div>
 
             <div className="flex items-center">
-              <div className="w-full rounded-[2rem] bg-white/[0.07] p-2 ring-1 ring-white/10 shadow-[0_32px_90px_rgba(0,0,0,0.22)]">
+              <div data-gsap="card" className="w-full rounded-[2rem] bg-white/[0.07] p-2 ring-1 ring-white/10 shadow-[0_32px_90px_rgba(0,0,0,0.22)]">
                 <div className="overflow-hidden rounded-[calc(2rem-0.5rem)] bg-[#f8faf6] p-5 text-qabul-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
                   <div className="flex items-center justify-between">
                     <div>
@@ -120,7 +127,7 @@ export function AuthFrame({ title, description, children }) {
       </section>
 
       <section className="grid place-items-center py-6 lg:py-0">
-        <div className="surface-shell w-full max-w-[28rem] rounded-[2rem]">
+        <div data-gsap="card" className="surface-shell w-full max-w-[28rem] rounded-[2rem]">
           <div className="surface-core rounded-[calc(2rem-0.375rem)] p-6 sm:p-8">
             <div className="mb-6">
               <div className="mb-7 flex items-center justify-between">

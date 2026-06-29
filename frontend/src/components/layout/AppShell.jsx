@@ -1,16 +1,26 @@
-import { Outlet } from 'react-router-dom'
+import { useRef } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
 
+import { useGsapMotion } from '../../animations/useGsapMotion.js'
 import { MobileNav } from './MobileNav.jsx'
 import { Navbar } from './Navbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
 
 export function AppShell() {
+  const scope = useRef(null)
+  const location = useLocation()
+
+  useGsapMotion(scope, [location.pathname])
+
   return (
-    <div className="min-h-[100dvh] text-qabul-ink">
+    <div ref={scope} className="app-frame min-h-[100dvh] text-qabul-ink">
       <Sidebar />
       <div className="min-h-[100dvh] lg:pl-[18rem]">
         <Navbar />
-        <main id="main-content" className="mx-auto w-full max-w-[1480px] px-4 pb-28 pt-4 sm:px-6 lg:px-8 lg:pb-10">
+        <main
+          id="main-content"
+          className="mx-auto w-full max-w-[1480px] px-4 pb-28 pt-4 sm:px-6 lg:px-8 lg:pb-10"
+        >
           <Outlet />
         </main>
       </div>
