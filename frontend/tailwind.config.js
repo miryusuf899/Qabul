@@ -22,8 +22,8 @@ export default {
         insetline: 'inset 0 1px 0 rgba(255, 255, 255, 0.72)',
       },
       fontFamily: {
-        sans: ['QabulSans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mono: ['QabulMono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        sans: ['Plus Jakarta Sans Variable', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono Variable', 'SFMono-Regular', 'ui-monospace', 'monospace'],
       },
     },
   },

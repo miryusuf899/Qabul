@@ -27,7 +27,7 @@ export function RegisterPage() {
     >
       <form className="grid gap-5" onSubmit={handleSubmit}>
         {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
-        <FormField label="Full name">
+        <FormField label="Имя и фамилия">
           <input
             className="input"
             required
@@ -45,14 +45,14 @@ export function RegisterPage() {
             onChange={(event) => setForm({ ...form, email: event.target.value })}
           />
         </FormField>
-        <FormField label="Phone">
+        <FormField label="Телефон">
           <input
             className="input"
             value={form.phone}
             onChange={(event) => setForm({ ...form, phone: event.target.value })}
           />
         </FormField>
-        <FormField label="Password">
+        <FormField label="Пароль">
           <input
             className="input"
             type="password"

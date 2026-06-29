@@ -22,7 +22,7 @@ export function LoginPage() {
 
   return (
     <AuthFrame
-      title="Вход в dashboard"
+      title="Вход в Qabul"
       description="Управляйте записями, услугами и клиентами из одной панели."
     >
       <form className="grid gap-5" onSubmit={handleSubmit}>
@@ -36,7 +36,7 @@ export function LoginPage() {
             onChange={(event) => setForm({ ...form, email: event.target.value })}
           />
         </FormField>
-        <FormField label="Password">
+        <FormField label="Пароль">
           <input
             className="input"
             type="password"

@@ -2,25 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'QabulSans';
-  src:
-    local('Plus Jakarta Sans'),
-    local('Geist'),
-    local('Aptos'),
-    local('system-ui');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'QabulMono';
-  src:
-    local('JetBrains Mono'),
-    local('SFMono-Regular'),
-    local('ui-monospace');
-  font-display: swap;
-}
-
 :root {
   color: #17211d;
   background: #f4f6f2;
@@ -137,7 +118,7 @@ button:disabled {
   }
 
   .input {
-    @apply h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm text-qabul-ink outline-none ring-1 ring-qabul-ink/10 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-qabul-muted/65 focus:ring-2 focus:ring-qabul-leaf/30;
+    @apply h-12 w-full rounded-2xl border-0 bg-white px-4 text-sm font-medium text-qabul-ink outline-none ring-1 ring-qabul-ink/10 transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-qabul-muted/65 focus:ring-2 focus:ring-qabul-leaf/30;
   }
 
   .textarea {

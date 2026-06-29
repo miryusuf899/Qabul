@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
+import '@fontsource-variable/plus-jakarta-sans'
+import '@fontsource-variable/jetbrains-mono'
 
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
