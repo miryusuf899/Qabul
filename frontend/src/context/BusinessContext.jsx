@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { api, getErrorMessage } from '../api/client.js'
 import { useAuth } from './AuthContext.jsx'
@@ -15,42 +15,67 @@ export function BusinessProvider({ children }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    let cancelled = false
-    async function loadBusinesses() {
+  const refreshBusinesses = useCallback(
+    async (options = {}) => {
       if (!token) {
         setBusinesses([])
         setSelectedBusinessIdState(null)
-        return
+        return []
       }
       setLoading(true)
       setError('')
       try {
         const { data } = await api.get('/businesses')
-        if (cancelled) return
         setBusinesses(data)
-        const currentStillExists = data.some((business) => business.id === selectedBusinessId)
+        const preferredId = options.preferredId || selectedBusinessId
+        const currentStillExists = data.some((business) => business.id === preferredId)
         if (!currentStillExists) {
           const nextId = data[0]?.id || null
           setSelectedBusinessIdState(nextId)
           if (nextId) localStorage.setItem('qabul_business_id', String(nextId))
+        } else if (preferredId) {
+          setSelectedBusinessIdState(preferredId)
+          localStorage.setItem('qabul_business_id', String(preferredId))
         }
+        return data
       } catch (requestError) {
-        if (!cancelled) setError(getErrorMessage(requestError, 'Не удалось загрузить бизнесы'))
+        setError(getErrorMessage(requestError, 'Не удалось загрузить бизнесы'))
+        return []
       } finally {
-        if (!cancelled) setLoading(false)
+        setLoading(false)
       }
+    },
+    [token, selectedBusinessId],
+  )
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      if (!cancelled) await refreshBusinesses()
     }
-    loadBusinesses()
+    load()
     return () => {
       cancelled = true
     }
-  }, [token, selectedBusinessId])
+  }, [refreshBusinesses])
 
   function setSelectedBusinessId(id) {
     setSelectedBusinessIdState(id)
     if (id) {
       localStorage.setItem('qabul_business_id', String(id))
+    }
+  }
+
+  async function createBusiness(payload) {
+    try {
+      const cleanPayload = Object.fromEntries(
+        Object.entries(payload).map(([key, value]) => [key, value === '' ? null : value]),
+      )
+      const { data } = await api.post('/businesses', cleanPayload)
+      await refreshBusinesses({ preferredId: data.id })
+      return { ok: true, business: data }
+    } catch (requestError) {
+      return { ok: false, error: getErrorMessage(requestError, 'Не удалось создать бизнес') }
     }
   }
 
@@ -64,8 +89,10 @@ export function BusinessProvider({ children }) {
       setSelectedBusinessId,
       loading,
       error,
+      refreshBusinesses,
+      createBusiness,
     }),
-    [businesses, selectedBusiness, selectedBusinessId, loading, error],
+    [businesses, selectedBusiness, selectedBusinessId, loading, error, refreshBusinesses],
   )
 
   return <BusinessContext.Provider value={value}>{children}</BusinessContext.Provider>
