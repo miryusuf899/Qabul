@@ -18,10 +18,12 @@ import { Panel } from '../components/ui/Panel.jsx'
 import { StatCard } from '../components/dashboard/StatCard.jsx'
 import { UpcomingBookings } from '../components/dashboard/UpcomingBookings.jsx'
 import { useBusiness } from '../context/BusinessContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 import { formatDate, money, number } from '../utils/format.js'
 
 export function DashboardPage() {
   const { selectedBusiness, selectedBusinessId, loading: businessLoading } = useBusiness()
+  const { t } = useLanguage()
   const [summary, setSummary] = useState(null)
   const [charts, setCharts] = useState(null)
   const [bookings, setBookings] = useState([])
@@ -45,7 +47,7 @@ export function DashboardPage() {
         setCharts(chartsResponse.data)
         setBookings(bookingsResponse.data.slice(0, 6))
       } catch (requestError) {
-        if (!cancelled) setError(getErrorMessage(requestError, 'Не удалось загрузить dashboard'))
+        if (!cancelled) setError(getErrorMessage(requestError, 'Не удалось загрузить панель'))
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -61,8 +63,8 @@ export function DashboardPage() {
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <div>
           <PageHeader
-            title="Create your first business"
-            description="Qabul needs a business profile before services, staff and bookings can be managed."
+            title={t('dashboard.createTitle')}
+            description={t('dashboard.createDescription')}
           />
           <Panel>
             <BusinessCreateForm />
@@ -74,13 +76,13 @@ export function DashboardPage() {
               <div className="grid size-12 place-items-center rounded-2xl bg-qabul-leaf/10 text-qabul-leaf">
                 <Store size={23} strokeWidth={1.7} />
               </div>
-              <h2 className="mt-6 text-2xl font-black tracking-[-0.05em]">Built for daily operations</h2>
+              <h2 className="mt-6 text-2xl font-black tracking-[-0.05em]">{t('dashboard.operationsTitle')}</h2>
               <p className="mt-3 max-w-lg text-sm leading-6 text-qabul-muted">
-                Add services, connect staff, set working hours and let Telegram clients request bookings.
+                {t('dashboard.operationsText')}
               </p>
             </div>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {['Services', 'Staff', 'Bookings'].map((item) => (
+              {[t('nav.services'), t('nav.staff'), t('nav.bookings')].map((item) => (
                 <div key={item} className="rounded-2xl bg-qabul-wash p-4 text-sm font-bold text-qabul-ink ring-1 ring-qabul-ink/5">
                   {item}
                 </div>
@@ -95,37 +97,37 @@ export function DashboardPage() {
   return (
     <>
       <PageHeader
-        title={selectedBusiness ? `${selectedBusiness.name} dashboard` : 'Dashboard'}
-        description="Bookings, revenue, clients and upcoming work for the selected business."
+        title={selectedBusiness ? t('dashboard.titleWithBusiness', selectedBusiness.name) : t('dashboard.title')}
+        description={t('dashboard.description')}
         action={
           <button className="btn btn-primary">
             <Plus size={17} strokeWidth={1.8} />
-            New booking
+            {t('dashboard.newBooking')}
           </button>
         }
       />
       {error ? <div className="mb-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
       <div className="mb-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Today"
+          label={t('dashboard.today')}
           value={loading ? '...' : number(summary?.today_bookings)}
-          helper="Bookings today"
+          helper={t('dashboard.todayHelper')}
         />
         <StatCard
-          label="Month"
+          label={t('dashboard.month')}
           value={loading ? '...' : number(summary?.month_bookings)}
-          helper="Bookings this month"
+          helper={t('dashboard.monthHelper')}
         />
         <StatCard
-          label="Revenue"
+          label={t('dashboard.revenue')}
           value={loading ? '...' : money(summary?.month_revenue)}
-          helper="Confirmed and completed"
+          helper={t('dashboard.revenueHelper')}
           tone="amber"
         />
         <StatCard
-          label="Clients"
+          label={t('dashboard.clients')}
           value={loading ? '...' : number(summary?.new_clients_this_month)}
-          helper="New this month"
+          helper={t('dashboard.clientsHelper')}
         />
       </div>
 
@@ -133,8 +135,8 @@ export function DashboardPage() {
         <Panel>
           <div className="mb-4 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg font-black tracking-[-0.035em]">Bookings and revenue</h2>
-              <p className="text-sm text-qabul-muted">Last 14 days</p>
+              <h2 className="text-lg font-black tracking-[-0.035em]">{t('dashboard.chartTitle')}</h2>
+              <p className="text-sm text-qabul-muted">{t('dashboard.chartSubtitle')}</p>
             </div>
           </div>
           {loading ? (
@@ -170,14 +172,14 @@ export function DashboardPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <EmptyState title="No chart data yet" description="Bookings will start shaping the chart once appointments exist." />
+            <EmptyState title={t('dashboard.noChartTitle')} description={t('dashboard.noChartText')} />
           )}
         </Panel>
         <Panel>
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-black tracking-[-0.035em]">Upcoming bookings</h2>
-              <p className="text-sm text-qabul-muted">Nearest appointments</p>
+              <h2 className="text-lg font-black tracking-[-0.035em]">{t('dashboard.upcomingTitle')}</h2>
+              <p className="text-sm text-qabul-muted">{t('dashboard.upcomingSubtitle')}</p>
             </div>
             <CalendarClock size={19} strokeWidth={1.7} className="text-qabul-muted" />
           </div>

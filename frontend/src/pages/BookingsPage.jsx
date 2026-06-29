@@ -8,6 +8,7 @@ import { FormField } from '../components/ui/FormField.jsx'
 import { PageHeader } from '../components/ui/PageHeader.jsx'
 import { Panel } from '../components/ui/Panel.jsx'
 import { useBusiness } from '../context/BusinessContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 import { formatDateTime, money } from '../utils/format.js'
 
 const emptyForm = {
@@ -29,6 +30,7 @@ const statusTone = {
 
 export function BookingsPage() {
   const { selectedBusinessId } = useBusiness()
+  const { t } = useLanguage()
   const [bookings, setBookings] = useState([])
   const [services, setServices] = useState([])
   const [staff, setStaff] = useState([])
@@ -121,7 +123,7 @@ export function BookingsPage() {
   async function cancelBooking(bookingId) {
     setError('')
     try {
-      await api.delete(`/bookings/${bookingId}`, { params: { reason: 'Cancelled from dashboard' } })
+      await api.delete(`/bookings/${bookingId}`, { params: { reason: t('bookingsPage.cancelReason') } })
       await loadBookings()
     } catch (requestError) {
       setError(getErrorMessage(requestError, 'Не удалось отменить запись'))
@@ -131,65 +133,65 @@ export function BookingsPage() {
   return (
     <>
       <PageHeader
-        title="Bookings"
-        description="Create, cancel and track appointments without losing context."
+        title={t('bookingsPage.title')}
+        description={t('bookingsPage.description')}
         action={
           <button className="btn btn-primary">
             <Plus size={17} strokeWidth={1.8} />
-            New booking
+            {t('bookingsPage.newAction')}
           </button>
         }
       />
       {!selectedBusinessId ? (
         <Panel>
-          <EmptyState title="No business selected" description="Select a business before managing bookings." />
+          <EmptyState title={t('bookingsPage.noBusinessTitle')} description={t('bookingsPage.noBusinessText')} />
         </Panel>
       ) : (
         <div className="grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
           <Panel>
-            <h2 className="text-lg font-black tracking-[-0.035em]">Create booking</h2>
+            <h2 className="text-lg font-black tracking-[-0.035em]">{t('bookingsPage.createTitle')}</h2>
             <p className="mt-1 text-sm leading-6 text-qabul-muted">
-              Backend checks service, staff, working hours and conflicts.
+              {t('bookingsPage.formText')}
             </p>
             <form className="mt-5 grid gap-4" onSubmit={handleSubmit}>
               {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
-              <FormField label="Client name">
+              <FormField label={t('bookingsPage.clientName')}>
                 <input
                   className="input"
                   value={form.client_name}
                   onChange={(event) => setForm({ ...form, client_name: event.target.value })}
                 />
               </FormField>
-              <FormField label="Client phone">
+              <FormField label={t('bookingsPage.clientPhone')}>
                 <input
                   className="input"
                   value={form.client_phone}
                   onChange={(event) => setForm({ ...form, client_phone: event.target.value })}
                 />
               </FormField>
-              <FormField label="Service">
+              <FormField label={t('common.service')}>
                 <select
                   className="select"
                   required
                   value={form.service_id}
                   onChange={(event) => setForm({ ...form, service_id: event.target.value })}
                 >
-                  <option value="">Select service</option>
+                  <option value="">{t('bookingsPage.selectService')}</option>
                   {activeServices.map((service) => (
                     <option key={service.id} value={service.id}>
-                      {service.name} - {service.duration_minutes} min
+                      {service.name} - {service.duration_minutes} {t('common.minutesShort')}
                     </option>
                   ))}
                 </select>
               </FormField>
-              <FormField label="Staff">
+              <FormField label={t('common.staff')}>
                 <select
                   className="select"
                   required
                   value={form.staff_id}
                   onChange={(event) => setForm({ ...form, staff_id: event.target.value })}
                 >
-                  <option value="">Select staff</option>
+                  <option value="">{t('bookingsPage.selectStaff')}</option>
                   {activeStaff.map((member) => (
                     <option key={member.id} value={member.id}>
                       {member.full_name}
@@ -197,7 +199,7 @@ export function BookingsPage() {
                   ))}
                 </select>
               </FormField>
-              <FormField label="Start time">
+              <FormField label={t('bookingsPage.startTime')}>
                 <input
                   className="input"
                   type="datetime-local"
@@ -206,7 +208,7 @@ export function BookingsPage() {
                   onChange={(event) => setForm({ ...form, start_time: event.target.value })}
                 />
               </FormField>
-              <FormField label="Note">
+              <FormField label={t('bookingsPage.note')}>
                 <textarea
                   className="textarea"
                   value={form.note}
@@ -215,7 +217,7 @@ export function BookingsPage() {
               </FormField>
               <button className="btn btn-primary w-full" disabled={submitting || activeServices.length === 0 || activeStaff.length === 0}>
                 <Plus size={17} strokeWidth={1.8} />
-                {submitting ? 'Creating' : 'Create booking'}
+                {submitting ? t('bookingsPage.creating') : t('bookingsPage.create')}
               </button>
             </form>
           </Panel>
@@ -227,28 +229,28 @@ export function BookingsPage() {
                 type="date"
                 value={filters.date}
                 onChange={(event) => setFilters({ ...filters, date: event.target.value })}
-                aria-label="Filter by date"
+                aria-label={t('bookingsPage.filterDate')}
               />
               <select
                 className="select"
                 value={filters.status}
                 onChange={(event) => setFilters({ ...filters, status: event.target.value })}
-                aria-label="Filter by status"
+                aria-label={t('bookingsPage.filterStatus')}
               >
-                <option value="">All statuses</option>
-                <option value="pending">pending</option>
-                <option value="confirmed">confirmed</option>
-                <option value="completed">completed</option>
-                <option value="cancelled">cancelled</option>
-                <option value="no_show">no_show</option>
+                <option value="">{t('bookingsPage.allStatuses')}</option>
+                <option value="pending">{t('status.pending')}</option>
+                <option value="confirmed">{t('status.confirmed')}</option>
+                <option value="completed">{t('status.completed')}</option>
+                <option value="cancelled">{t('status.cancelled')}</option>
+                <option value="no_show">{t('status.no_show')}</option>
               </select>
               <select
                 className="select"
                 value={filters.staff_id}
                 onChange={(event) => setFilters({ ...filters, staff_id: event.target.value })}
-                aria-label="Filter by staff"
+                aria-label={t('bookingsPage.filterStaff')}
               >
-                <option value="">All staff</option>
+                <option value="">{t('bookingsPage.allStaff')}</option>
                 {staff.map((member) => (
                   <option key={member.id} value={member.id}>
                     {member.full_name}
@@ -259,9 +261,9 @@ export function BookingsPage() {
                 className="select"
                 value={filters.service_id}
                 onChange={(event) => setFilters({ ...filters, service_id: event.target.value })}
-                aria-label="Filter by service"
+                aria-label={t('bookingsPage.filterService')}
               >
-                <option value="">All services</option>
+                <option value="">{t('bookingsPage.allServices')}</option>
                 {services.map((service) => (
                   <option key={service.id} value={service.id}>
                     {service.name}
@@ -277,26 +279,26 @@ export function BookingsPage() {
                 <div className="skeleton h-16" />
               </div>
             ) : bookings.length === 0 ? (
-              <EmptyState title="No bookings found" description="Create a booking or change filters to see appointments." />
+              <EmptyState title={t('bookingsPage.emptyTitle')} description={t('bookingsPage.emptyText')} />
             ) : (
               <div className="overflow-x-auto rounded-2xl ring-1 ring-qabul-ink/5">
                 <table className="w-full min-w-[820px] border-collapse bg-white">
                   <thead className="bg-qabul-wash">
                     <tr>
-                      <th className="table-th">Client</th>
-                      <th className="table-th">Service</th>
-                      <th className="table-th">Staff</th>
-                      <th className="table-th">Time</th>
-                      <th className="table-th">Status</th>
-                      <th className="table-th text-right">Actions</th>
+                      <th className="table-th">{t('common.client')}</th>
+                      <th className="table-th">{t('common.service')}</th>
+                      <th className="table-th">{t('common.staff')}</th>
+                      <th className="table-th">{t('common.time')}</th>
+                      <th className="table-th">{t('common.status')}</th>
+                      <th className="table-th text-right">{t('common.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {bookings.map((booking) => (
                       <tr key={booking.id} className="transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-qabul-wash/70">
                         <td className="table-td">
-                          <div className="font-semibold text-qabul-ink">{booking.client_name || 'Client'}</div>
-                          <div className="text-xs text-qabul-muted">{booking.client_phone || 'No phone'}</div>
+                          <div className="font-semibold text-qabul-ink">{booking.client_name || t('common.client')}</div>
+                          <div className="text-xs text-qabul-muted">{booking.client_phone || t('common.noPhone')}</div>
                         </td>
                         <td className="table-td">
                           <div className="font-semibold text-qabul-ink">{booking.service_name}</div>
@@ -305,7 +307,7 @@ export function BookingsPage() {
                         <td className="table-td">{booking.staff_name}</td>
                         <td className="table-td font-mono text-xs">{formatDateTime(booking.start_time)}</td>
                         <td className="table-td">
-                          <Badge tone={statusTone[booking.status] || 'graphite'}>{booking.status}</Badge>
+                          <Badge tone={statusTone[booking.status] || 'graphite'}>{t(`status.${booking.status}`)}</Badge>
                         </td>
                         <td className="table-td">
                           <div className="flex justify-end gap-2">
@@ -314,14 +316,14 @@ export function BookingsPage() {
                                 <button
                                   className="btn btn-secondary size-9 p-0"
                                   onClick={() => changeStatus(booking.id, 'completed')}
-                                  aria-label="Mark completed"
+                                  aria-label={t('bookingsPage.markCompleted')}
                                 >
                                   <CheckCircle2 size={16} strokeWidth={1.8} />
                                 </button>
                                 <button
                                   className="btn btn-secondary size-9 p-0"
                                   onClick={() => cancelBooking(booking.id)}
-                                  aria-label="Cancel booking"
+                                  aria-label={t('bookingsPage.cancelBooking')}
                                 >
                                   <Ban size={16} strokeWidth={1.8} />
                                 </button>
@@ -330,7 +332,7 @@ export function BookingsPage() {
                               <button
                                 className="btn btn-secondary size-9 p-0"
                                 onClick={() => changeStatus(booking.id, 'confirmed')}
-                                aria-label="Restore booking"
+                                aria-label={t('bookingsPage.restoreBooking')}
                               >
                                 <RefreshCcw size={16} strokeWidth={1.8} />
                               </button>

@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom'
 import { AuthFrame } from '../components/auth/AuthFrame.jsx'
 import { FormField } from '../components/ui/FormField.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 
 export function LoginPage() {
   const { login } = useAuth()
+  const { t } = useLanguage()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -22,12 +24,12 @@ export function LoginPage() {
 
   return (
     <AuthFrame
-      title="Вход в Qabul"
-      description="Управляйте записями, услугами и клиентами из одной панели."
+      title={t('auth.loginTitle')}
+      description={t('auth.loginDescription')}
     >
       <form className="grid gap-5" onSubmit={handleSubmit}>
         {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
-        <FormField label="Email">
+        <FormField label={t('common.email')}>
           <input
             className="input"
             type="email"
@@ -36,7 +38,7 @@ export function LoginPage() {
             onChange={(event) => setForm({ ...form, email: event.target.value })}
           />
         </FormField>
-        <FormField label="Пароль">
+        <FormField label={t('common.password')}>
           <input
             className="input"
             type="password"
@@ -47,12 +49,12 @@ export function LoginPage() {
           />
         </FormField>
         <button className="btn btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Входим' : 'Войти'}
+          {submitting ? t('auth.loggingIn') : t('auth.loginButton')}
         </button>
         <p className="text-center text-sm text-qabul-muted">
-          Нет аккаунта?{' '}
+          {t('auth.noAccount')}{' '}
           <Link className="font-semibold text-qabul-leaf hover:text-qabul-leafDark" to="/register">
-            Зарегистрироваться
+            {t('auth.registerLink')}
           </Link>
         </p>
       </form>

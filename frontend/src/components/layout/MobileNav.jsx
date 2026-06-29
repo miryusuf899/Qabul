@@ -7,15 +7,19 @@ import {
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
+import { useLanguage } from '../../context/LanguageContext.jsx'
+
 const mobileItems = [
-  { to: '/', label: 'Home', icon: LayoutDashboard, end: true },
-  { to: '/services', label: 'Services', icon: Scissors },
-  { to: '/bookings', label: 'Bookings', icon: CalendarClock },
-  { to: '/clients', label: 'Clients', icon: Users },
-  { to: '/analytics', label: 'Data', icon: BarChart3 },
+  { to: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard, end: true },
+  { to: '/services', labelKey: 'nav.services', icon: Scissors },
+  { to: '/bookings', labelKey: 'nav.bookings', icon: CalendarClock },
+  { to: '/clients', labelKey: 'nav.clients', icon: Users },
+  { to: '/analytics', labelKey: 'nav.analytics', icon: BarChart3 },
 ]
 
 export function MobileNav() {
+  const { t } = useLanguage()
+
   return (
     <nav className="fixed inset-x-3 bottom-3 z-40 rounded-[1.4rem] bg-qabul-ink/92 p-1.5 shadow-[0_18px_60px_rgba(23,33,29,0.24)] backdrop-blur-xl lg:hidden">
       <div className="grid grid-cols-5 gap-1">
@@ -32,7 +36,7 @@ export function MobileNav() {
             }
           >
             <item.icon size={18} strokeWidth={1.65} />
-            <span>{item.label}</span>
+            <span>{t(item.labelKey)}</span>
           </NavLink>
         ))}
       </div>

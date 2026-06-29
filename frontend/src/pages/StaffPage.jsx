@@ -8,6 +8,7 @@ import { FormField } from '../components/ui/FormField.jsx'
 import { PageHeader } from '../components/ui/PageHeader.jsx'
 import { Panel } from '../components/ui/Panel.jsx'
 import { useBusiness } from '../context/BusinessContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 
 const emptyForm = {
   full_name: '',
@@ -19,6 +20,7 @@ const emptyForm = {
 
 export function StaffPage() {
   const { selectedBusinessId } = useBusiness()
+  const { t } = useLanguage()
   const [staff, setStaff] = useState([])
   const [services, setServices] = useState([])
   const [form, setForm] = useState(emptyForm)
@@ -119,37 +121,37 @@ export function StaffPage() {
     const names = services
       .filter((service) => member.service_ids?.includes(service.id))
       .map((service) => service.name)
-    return names.length ? names.join(', ') : 'No services'
+    return names.length ? names.join(', ') : t('common.noServices')
   }
 
   return (
     <>
       <PageHeader
-        title="Staff"
-        description="Assign services to each master and keep schedules clean."
+        title={t('staffPage.title')}
+        description={t('staffPage.description')}
         action={
           <button className="btn btn-primary">
             <Plus size={17} strokeWidth={1.8} />
-            Add staff
+            {t('staffPage.addAction')}
           </button>
         }
       />
       {!selectedBusinessId ? (
         <Panel>
-          <EmptyState title="No business selected" description="Select a business before adding staff." />
+          <EmptyState title={t('staffPage.noBusinessTitle')} description={t('staffPage.noBusinessText')} />
         </Panel>
       ) : (
         <div className="grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
           <Panel>
             <h2 className="text-lg font-black tracking-[-0.035em]">
-              {editingId ? 'Edit staff member' : 'Add staff member'}
+              {editingId ? t('staffPage.editTitle') : t('staffPage.addTitle')}
             </h2>
             <p className="mt-1 text-sm leading-6 text-qabul-muted">
-              Staff can only receive bookings for assigned services.
+              {t('staffPage.formText')}
             </p>
             <form className="mt-5 grid gap-4" onSubmit={handleSubmit}>
               {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
-              <FormField label="Full name">
+              <FormField label={t('common.fullName')}>
                 <input
                   className="input"
                   required
@@ -158,14 +160,14 @@ export function StaffPage() {
                   onChange={(event) => setForm({ ...form, full_name: event.target.value })}
                 />
               </FormField>
-              <FormField label="Phone">
+              <FormField label={t('common.phone')}>
                 <input
                   className="input"
                   value={form.phone}
                   onChange={(event) => setForm({ ...form, phone: event.target.value })}
                 />
               </FormField>
-              <FormField label="Specialization">
+              <FormField label={t('staffPage.specialization')}>
                 <input
                   className="input"
                   value={form.specialization}
@@ -173,11 +175,11 @@ export function StaffPage() {
                 />
               </FormField>
               <div>
-                <p className="field-label mb-2">Services</p>
+                <p className="field-label mb-2">{t('common.services')}</p>
                 <div className="grid gap-2">
                   {services.length === 0 ? (
                     <p className="rounded-xl bg-qabul-wash px-4 py-3 text-sm text-qabul-muted">
-                      Add services first.
+                      {t('staffPage.addServicesFirst')}
                     </p>
                   ) : (
                     services.map((service) => (
@@ -198,7 +200,7 @@ export function StaffPage() {
                 </div>
               </div>
               <label className="flex items-center justify-between rounded-2xl bg-qabul-wash px-4 py-3 text-sm font-semibold text-qabul-ink ring-1 ring-qabul-ink/5">
-                Active
+                {t('common.active')}
                 <input
                   className="size-5 accent-qabul-leaf"
                   type="checkbox"
@@ -209,11 +211,11 @@ export function StaffPage() {
               <div className="flex gap-2">
                 <button className="btn btn-primary flex-1" disabled={submitting || services.length === 0}>
                   <Check size={17} strokeWidth={1.8} />
-                  {submitting ? 'Saving' : 'Save'}
+                  {submitting ? t('common.saving') : t('common.save')}
                 </button>
                 {editingId ? (
                   <button type="button" className="btn btn-secondary" onClick={resetForm}>
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                 ) : null}
               </div>
@@ -227,16 +229,16 @@ export function StaffPage() {
                 <div className="skeleton h-16" />
               </div>
             ) : staff.length === 0 ? (
-              <EmptyState title="No staff yet" description="Add masters and assign the services they can perform." />
+              <EmptyState title={t('staffPage.emptyTitle')} description={t('staffPage.emptyText')} />
             ) : (
               <div className="overflow-hidden rounded-2xl ring-1 ring-qabul-ink/5">
                 <table className="w-full border-collapse bg-white">
                   <thead className="bg-qabul-wash">
                     <tr>
-                      <th className="table-th">Name</th>
-                      <th className="table-th">Services</th>
-                      <th className="table-th">Status</th>
-                      <th className="table-th text-right">Actions</th>
+                      <th className="table-th">{t('common.name')}</th>
+                      <th className="table-th">{t('common.services')}</th>
+                      <th className="table-th">{t('common.status')}</th>
+                      <th className="table-th text-right">{t('common.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -244,24 +246,24 @@ export function StaffPage() {
                       <tr key={member.id} className="transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-qabul-wash/70">
                         <td className="table-td">
                           <div className="font-semibold text-qabul-ink">{member.full_name}</div>
-                          <div className="text-xs text-qabul-muted">{member.phone || member.specialization || 'No contact'}</div>
+                          <div className="text-xs text-qabul-muted">{member.phone || member.specialization || t('common.noContact')}</div>
                         </td>
                         <td className="table-td max-w-md truncate">{serviceNames(member)}</td>
                         <td className="table-td">
                           <Badge tone={member.is_active ? 'green' : 'graphite'}>
-                            {member.is_active ? 'active' : 'off'}
+                            {member.is_active ? t('common.active') : t('common.off')}
                           </Badge>
                         </td>
                         <td className="table-td">
                           <div className="flex justify-end gap-2">
-                            <button className="btn btn-secondary size-9 p-0" onClick={() => startEdit(member)} aria-label="Edit staff">
+                            <button className="btn btn-secondary size-9 p-0" onClick={() => startEdit(member)} aria-label={t('staffPage.edit')}>
                               <Pencil size={16} strokeWidth={1.8} />
                             </button>
                             {member.is_active ? (
                               <button
                                 className="btn btn-secondary size-9 p-0"
                                 onClick={() => disableStaff(member.id)}
-                                aria-label="Disable staff"
+                                aria-label={t('staffPage.disable')}
                               >
                                 <Power size={16} strokeWidth={1.8} />
                               </button>

@@ -7,10 +7,12 @@ import { FormField } from '../components/ui/FormField.jsx'
 import { PageHeader } from '../components/ui/PageHeader.jsx'
 import { Panel } from '../components/ui/Panel.jsx'
 import { useBusiness } from '../context/BusinessContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 import { formatDateTime } from '../utils/format.js'
 
 export function ClientsPage() {
   const { selectedBusinessId } = useBusiness()
+  const { t } = useLanguage()
   const [clients, setClients] = useState([])
   const [selectedClient, setSelectedClient] = useState(null)
   const [form, setForm] = useState({ full_name: '', phone: '', telegram_username: '' })
@@ -79,23 +81,23 @@ export function ClientsPage() {
 
   return (
     <>
-      <PageHeader title="Clients" description="View client history, Telegram profiles and contact details." />
+      <PageHeader title={t('clientsPage.title')} description={t('clientsPage.description')} />
       {!selectedBusinessId ? (
         <Panel>
-          <EmptyState title="No business selected" description="Select a business before viewing clients." />
+          <EmptyState title={t('clientsPage.noBusinessTitle')} description={t('clientsPage.noBusinessText')} />
         </Panel>
       ) : (
         <div className="grid gap-5 xl:grid-cols-[1.28fr_0.72fr]">
           <Panel>
             <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-lg font-black tracking-[-0.035em]">Client base</h2>
-                <p className="text-sm text-qabul-muted">Search by name, phone or Telegram username.</p>
+                <h2 className="text-lg font-black tracking-[-0.035em]">{t('clientsPage.baseTitle')}</h2>
+                <p className="text-sm text-qabul-muted">{t('clientsPage.baseText')}</p>
               </div>
               <input
                 className="input max-w-sm"
                 type="search"
-                placeholder="Search clients"
+                placeholder={t('clientsPage.search')}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
@@ -108,32 +110,32 @@ export function ClientsPage() {
                 <div className="skeleton h-16" />
               </div>
             ) : filteredClients.length === 0 ? (
-              <EmptyState title="No clients found" description="Clients appear after dashboard or Telegram bookings are created." />
+              <EmptyState title={t('clientsPage.emptyTitle')} description={t('clientsPage.emptyText')} />
             ) : (
               <div className="overflow-x-auto rounded-2xl ring-1 ring-qabul-ink/5">
                 <table className="w-full min-w-[720px] border-collapse bg-white">
                   <thead className="bg-qabul-wash">
                     <tr>
-                      <th className="table-th">Client</th>
-                      <th className="table-th">Telegram</th>
-                      <th className="table-th">Visits</th>
-                      <th className="table-th">Last visit</th>
-                      <th className="table-th text-right">Actions</th>
+                      <th className="table-th">{t('common.client')}</th>
+                      <th className="table-th">{t('clientsPage.telegram')}</th>
+                      <th className="table-th">{t('clientsPage.visits')}</th>
+                      <th className="table-th">{t('clientsPage.lastVisit')}</th>
+                      <th className="table-th text-right">{t('common.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredClients.map((client) => (
                       <tr key={client.id} className="transition duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-qabul-wash/70">
                         <td className="table-td">
-                          <div className="font-semibold text-qabul-ink">{client.full_name || 'Client'}</div>
-                          <div className="text-xs text-qabul-muted">{client.phone || 'No phone'}</div>
+                          <div className="font-semibold text-qabul-ink">{client.full_name || t('common.client')}</div>
+                          <div className="text-xs text-qabul-muted">{client.phone || t('common.noPhone')}</div>
                         </td>
-                        <td className="table-td">{client.telegram_username ? `@${client.telegram_username}` : 'No Telegram'}</td>
+                        <td className="table-td">{client.telegram_username ? `@${client.telegram_username}` : t('common.noTelegram')}</td>
                         <td className="table-td font-mono text-xs">{client.total_visits}</td>
-                        <td className="table-td font-mono text-xs">{client.last_visit_at ? formatDateTime(client.last_visit_at) : 'No visits'}</td>
+                        <td className="table-td font-mono text-xs">{client.last_visit_at ? formatDateTime(client.last_visit_at) : t('common.noVisits')}</td>
                         <td className="table-td">
                           <div className="flex justify-end">
-                            <button className="btn btn-secondary size-9 p-0" onClick={() => startEdit(client)} aria-label="Edit client">
+                            <button className="btn btn-secondary size-9 p-0" onClick={() => startEdit(client)} aria-label={t('clientsPage.editClient')}>
                               <Pencil size={16} strokeWidth={1.8} />
                             </button>
                           </div>
@@ -148,25 +150,25 @@ export function ClientsPage() {
 
           <Panel>
             <h2 className="text-lg font-black tracking-[-0.035em]">
-              {selectedClient ? 'Edit client' : 'Client details'}
+              {selectedClient ? t('clientsPage.editClient') : t('clientsPage.details')}
             </h2>
             {selectedClient ? (
               <form className="mt-5 grid gap-4" onSubmit={handleSubmit}>
-                <FormField label="Full name">
+                <FormField label={t('common.fullName')}>
                   <input
                     className="input"
                     value={form.full_name}
                     onChange={(event) => setForm({ ...form, full_name: event.target.value })}
                   />
                 </FormField>
-                <FormField label="Phone">
+                <FormField label={t('common.phone')}>
                   <input
                     className="input"
                     value={form.phone}
                     onChange={(event) => setForm({ ...form, phone: event.target.value })}
                   />
                 </FormField>
-                <FormField label="Telegram username">
+                <FormField label={t('clientsPage.telegramUsername')}>
                   <input
                     className="input"
                     value={form.telegram_username}
@@ -176,15 +178,15 @@ export function ClientsPage() {
                 <div className="flex gap-2">
                   <button className="btn btn-primary flex-1" disabled={submitting}>
                     <Check size={17} strokeWidth={1.8} />
-                    {submitting ? 'Saving' : 'Save'}
+                    {submitting ? t('common.saving') : t('common.save')}
                   </button>
                   <button type="button" className="btn btn-secondary" onClick={() => setSelectedClient(null)}>
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                 </div>
               </form>
             ) : (
-              <EmptyState title="Select a client" description="Open a client row to update contact details." />
+              <EmptyState title={t('clientsPage.selectTitle')} description={t('clientsPage.selectText')} />
             )}
           </Panel>
         </div>

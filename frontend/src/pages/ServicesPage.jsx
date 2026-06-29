@@ -8,6 +8,7 @@ import { FormField } from '../components/ui/FormField.jsx'
 import { PageHeader } from '../components/ui/PageHeader.jsx'
 import { Panel } from '../components/ui/Panel.jsx'
 import { useBusiness } from '../context/BusinessContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 import { money } from '../utils/format.js'
 
 const emptyForm = {
@@ -20,6 +21,7 @@ const emptyForm = {
 
 export function ServicesPage() {
   const { selectedBusinessId } = useBusiness()
+  const { t } = useLanguage()
   const [services, setServices] = useState([])
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState(null)
@@ -100,31 +102,31 @@ export function ServicesPage() {
   return (
     <>
       <PageHeader
-        title="Services"
-        description="Manage active services, prices and appointment duration."
+        title={t('servicesPage.title')}
+        description={t('servicesPage.description')}
         action={
           <button className="btn btn-primary">
             <Plus size={17} strokeWidth={1.8} />
-            Add service
+            {t('servicesPage.addAction')}
           </button>
         }
       />
       {!selectedBusinessId ? (
         <Panel>
-          <EmptyState title="No business selected" description="Create or select a business before adding services." />
+          <EmptyState title={t('servicesPage.noBusinessTitle')} description={t('servicesPage.noBusinessText')} />
         </Panel>
       ) : (
         <div className="grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
           <Panel>
             <h2 className="text-lg font-black tracking-[-0.035em]">
-              {editingId ? 'Edit service' : 'Add service'}
+              {editingId ? t('servicesPage.editTitle') : t('servicesPage.addTitle')}
             </h2>
             <p className="mt-1 text-sm leading-6 text-qabul-muted">
-              Price and duration are used by booking rules.
+              {t('servicesPage.formText')}
             </p>
             <form className="mt-5 grid gap-4" onSubmit={handleSubmit}>
               {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
-              <FormField label="Name">
+              <FormField label={t('common.name')}>
                 <input
                   className="input"
                   required
@@ -133,7 +135,7 @@ export function ServicesPage() {
                   onChange={(event) => setForm({ ...form, name: event.target.value })}
                 />
               </FormField>
-              <FormField label="Description">
+              <FormField label={t('common.description')}>
                 <textarea
                   className="textarea"
                   value={form.description}
@@ -141,7 +143,7 @@ export function ServicesPage() {
                 />
               </FormField>
               <div className="grid gap-4 sm:grid-cols-2">
-                <FormField label="Price">
+                <FormField label={t('common.price')}>
                   <input
                     className="input"
                     type="number"
@@ -152,7 +154,7 @@ export function ServicesPage() {
                     onChange={(event) => setForm({ ...form, price: event.target.value })}
                   />
                 </FormField>
-                <FormField label="Duration, min">
+                <FormField label={t('servicesPage.duration')}>
                   <input
                     className="input"
                     type="number"
@@ -164,7 +166,7 @@ export function ServicesPage() {
                 </FormField>
               </div>
               <label className="flex items-center justify-between rounded-2xl bg-qabul-wash px-4 py-3 text-sm font-semibold text-qabul-ink ring-1 ring-qabul-ink/5">
-                Active
+                {t('common.active')}
                 <input
                   className="size-5 accent-qabul-leaf"
                   type="checkbox"
@@ -175,11 +177,11 @@ export function ServicesPage() {
               <div className="flex gap-2">
                 <button className="btn btn-primary flex-1" disabled={submitting}>
                   <Check size={17} strokeWidth={1.8} />
-                  {submitting ? 'Saving' : 'Save'}
+                  {submitting ? t('common.saving') : t('common.save')}
                 </button>
                 {editingId ? (
                   <button type="button" className="btn btn-secondary" onClick={resetForm}>
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                 ) : null}
               </div>
@@ -194,17 +196,17 @@ export function ServicesPage() {
                 <div className="skeleton h-16" />
               </div>
             ) : services.length === 0 ? (
-              <EmptyState title="No services yet" description="Add the first service to let staff and bookings use it." />
+              <EmptyState title={t('servicesPage.emptyTitle')} description={t('servicesPage.emptyText')} />
             ) : (
               <div className="overflow-hidden rounded-2xl ring-1 ring-qabul-ink/5">
                 <table className="w-full border-collapse bg-white">
                   <thead className="bg-qabul-wash">
                     <tr>
-                      <th className="table-th">Service</th>
-                      <th className="table-th">Price</th>
-                      <th className="table-th">Duration</th>
-                      <th className="table-th">Status</th>
-                      <th className="table-th text-right">Actions</th>
+                      <th className="table-th">{t('servicesPage.tableService')}</th>
+                      <th className="table-th">{t('common.price')}</th>
+                      <th className="table-th">{t('common.duration')}</th>
+                      <th className="table-th">{t('common.status')}</th>
+                      <th className="table-th text-right">{t('common.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -213,26 +215,26 @@ export function ServicesPage() {
                         <td className="table-td">
                           <div className="font-semibold text-qabul-ink">{service.name}</div>
                           <div className="max-w-md truncate text-xs text-qabul-muted">
-                            {service.description || 'No description'}
+                            {service.description || t('common.noDescription')}
                           </div>
                         </td>
                         <td className="table-td font-mono text-xs">{money(service.price)}</td>
-                        <td className="table-td font-mono text-xs">{service.duration_minutes} min</td>
+                        <td className="table-td font-mono text-xs">{service.duration_minutes} {t('common.minutesShort')}</td>
                         <td className="table-td">
                           <Badge tone={service.is_active ? 'green' : 'graphite'}>
-                            {service.is_active ? 'active' : 'off'}
+                            {service.is_active ? t('common.active') : t('common.off')}
                           </Badge>
                         </td>
                         <td className="table-td">
                           <div className="flex justify-end gap-2">
-                            <button className="btn btn-secondary size-9 p-0" onClick={() => startEdit(service)} aria-label="Edit service">
+                            <button className="btn btn-secondary size-9 p-0" onClick={() => startEdit(service)} aria-label={t('servicesPage.edit')}>
                               <Pencil size={16} strokeWidth={1.8} />
                             </button>
                             {service.is_active ? (
                               <button
                                 className="btn btn-secondary size-9 p-0"
                                 onClick={() => disableService(service.id)}
-                                aria-label="Disable service"
+                                aria-label={t('servicesPage.disable')}
                               >
                                 <Power size={16} strokeWidth={1.8} />
                               </button>

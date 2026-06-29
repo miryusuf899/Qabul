@@ -8,16 +8,20 @@ import {
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
+import { useLanguage } from '../../context/LanguageContext.jsx'
+
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/services', label: 'Services', icon: Scissors },
-  { to: '/staff', label: 'Staff', icon: UserRoundCog },
-  { to: '/bookings', label: 'Bookings', icon: CalendarClock },
-  { to: '/clients', label: 'Clients', icon: Users },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard, end: true },
+  { to: '/services', labelKey: 'nav.services', icon: Scissors },
+  { to: '/staff', labelKey: 'nav.staff', icon: UserRoundCog },
+  { to: '/bookings', labelKey: 'nav.bookings', icon: CalendarClock },
+  { to: '/clients', labelKey: 'nav.clients', icon: Users },
+  { to: '/analytics', labelKey: 'nav.analytics', icon: BarChart3 },
 ]
 
 export function Sidebar() {
+  const { t } = useLanguage()
+
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-[18rem] p-4 lg:block">
       <div className="surface-shell h-full">
@@ -28,7 +32,7 @@ export function Sidebar() {
             </div>
             <div>
               <p className="text-lg font-black tracking-[-0.04em]">Qabul</p>
-              <p className="text-xs font-medium text-qabul-muted">Booking CRM</p>
+              <p className="text-xs font-medium text-qabul-muted">{t('nav.bookingCrm')}</p>
             </div>
           </div>
 
@@ -48,15 +52,15 @@ export function Sidebar() {
                 }
               >
                 <item.icon size={18} strokeWidth={1.75} />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </NavLink>
             ))}
           </div>
 
           <div className="mt-auto rounded-[1.35rem] bg-qabul-wash p-4 ring-1 ring-qabul-ink/5">
-            <p className="text-sm font-bold text-qabul-ink">AI administrator</p>
+            <p className="text-sm font-bold text-qabul-ink">{t('nav.aiTitle')}</p>
             <p className="mt-1 text-xs leading-5 text-qabul-muted">
-              Telegram messages become bookings after business rules are checked.
+              {t('nav.aiText')}
             </p>
           </div>
         </nav>

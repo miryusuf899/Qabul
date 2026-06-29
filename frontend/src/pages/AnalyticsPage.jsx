@@ -15,10 +15,12 @@ import { EmptyState } from '../components/ui/EmptyState.jsx'
 import { PageHeader } from '../components/ui/PageHeader.jsx'
 import { Panel } from '../components/ui/Panel.jsx'
 import { useBusiness } from '../context/BusinessContext.jsx'
+import { useLanguage } from '../context/LanguageContext.jsx'
 import { formatDate, money, number } from '../utils/format.js'
 
 export function AnalyticsPage() {
   const { selectedBusinessId } = useBusiness()
+  const { t } = useLanguage()
   const [summary, setSummary] = useState(null)
   const [charts, setCharts] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -62,30 +64,30 @@ export function AnalyticsPage() {
 
   return (
     <>
-      <PageHeader title="Analytics" description="Revenue, bookings and service performance in one place." />
+      <PageHeader title={t('analyticsPage.title')} description={t('analyticsPage.description')} />
       {!selectedBusinessId ? (
         <Panel>
-          <EmptyState title="No business selected" description="Select a business before opening analytics." />
+          <EmptyState title={t('analyticsPage.noBusinessTitle')} description={t('analyticsPage.noBusinessText')} />
         </Panel>
       ) : (
         <>
           {error ? <div className="mb-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</div> : null}
           <div className="mb-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <StatCard label="Week" value={loading ? '...' : number(summary?.week_bookings)} helper="Bookings this week" />
-            <StatCard label="Month" value={loading ? '...' : number(summary?.month_bookings)} helper="Bookings this month" />
-            <StatCard label="Revenue" value={loading ? '...' : money(summary?.month_revenue)} helper="Monthly revenue" tone="amber" />
-            <StatCard label="Cancelled" value={loading ? '...' : number(summary?.cancelled_bookings_this_month)} helper="This month" />
+            <StatCard label={t('analyticsPage.week')} value={loading ? '...' : number(summary?.week_bookings)} helper={t('analyticsPage.weekHelper')} />
+            <StatCard label={t('analyticsPage.month')} value={loading ? '...' : number(summary?.month_bookings)} helper={t('analyticsPage.monthHelper')} />
+            <StatCard label={t('analyticsPage.revenue')} value={loading ? '...' : money(summary?.month_revenue)} helper={t('analyticsPage.revenueHelper')} tone="amber" />
+            <StatCard label={t('analyticsPage.cancelled')} value={loading ? '...' : number(summary?.cancelled_bookings_this_month)} helper={t('analyticsPage.cancelledHelper')} />
           </div>
           <div className="grid gap-5 xl:grid-cols-2">
             <Panel>
-              <ChartBlock title="Bookings by day" data={bookingsByDay} dataKey="value" loading={loading} color="#2f8c67" />
+              <ChartBlock title={t('analyticsPage.bookingsByDay')} data={bookingsByDay} dataKey="value" loading={loading} color="#2f8c67" />
             </Panel>
             <Panel>
-              <ChartBlock title="Revenue by day" data={revenueByDay} dataKey="value" loading={loading} color="#a66f2a" />
+              <ChartBlock title={t('analyticsPage.revenueByDay')} data={revenueByDay} dataKey="value" loading={loading} color="#a66f2a" />
             </Panel>
             <Panel>
               <RankList
-                title="Service popularity"
+                title={t('analyticsPage.servicePopularity')}
                 rows={charts?.service_popularity || []}
                 getLabel={(row) => row.name}
                 loading={loading}
@@ -93,7 +95,7 @@ export function AnalyticsPage() {
             </Panel>
             <Panel>
               <RankList
-                title="Top staff"
+                title={t('analyticsPage.topStaff')}
                 rows={charts?.top_staff || []}
                 getLabel={(row) => row.full_name}
                 loading={loading}
@@ -107,13 +109,15 @@ export function AnalyticsPage() {
 }
 
 function ChartBlock({ title, data, dataKey, color, loading }) {
+  const { t } = useLanguage()
+
   return (
     <>
       <h2 className="mb-4 text-lg font-black tracking-[-0.035em]">{title}</h2>
       {loading ? (
         <div className="skeleton h-72 w-full" />
       ) : data.length === 0 ? (
-        <EmptyState title="No chart data" description="Create bookings to populate this chart." />
+        <EmptyState title={t('analyticsPage.noChartTitle')} description={t('analyticsPage.noChartText')} />
       ) : (
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -138,6 +142,8 @@ function ChartBlock({ title, data, dataKey, color, loading }) {
 }
 
 function RankList({ title, rows, getLabel, loading }) {
+  const { t } = useLanguage()
+
   return (
     <>
       <h2 className="mb-4 text-lg font-black tracking-[-0.035em]">{title}</h2>
@@ -148,7 +154,7 @@ function RankList({ title, rows, getLabel, loading }) {
           <div className="skeleton h-14" />
         </div>
       ) : rows.length === 0 ? (
-        <EmptyState title="No ranking yet" description="Completed and confirmed bookings will build this list." />
+        <EmptyState title={t('analyticsPage.noRankingTitle')} description={t('analyticsPage.noRankingText')} />
       ) : (
         <div className="grid gap-2">
           {rows.map((row, index) => (
@@ -158,7 +164,7 @@ function RankList({ title, rows, getLabel, loading }) {
             >
               <div>
                 <p className="font-semibold text-qabul-ink">{getLabel(row)}</p>
-                <p className="text-xs text-qabul-muted">Rank {index + 1}</p>
+                <p className="text-xs text-qabul-muted">{t('common.rank')} {index + 1}</p>
               </div>
               <span className="font-mono text-sm font-black text-qabul-leaf">{row.count}</span>
             </div>
