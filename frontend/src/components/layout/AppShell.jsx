@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 
+import { MobileNav } from './MobileNav.jsx'
 import { Navbar } from './Navbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
 
@@ -9,10 +10,11 @@ export function AppShell() {
       <Sidebar />
       <div className="min-h-[100dvh] lg:pl-[18rem]">
         <Navbar />
-        <main id="main-content" className="mx-auto w-full max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+        <main id="main-content" className="mx-auto w-full max-w-[1480px] px-4 pb-28 pt-4 sm:px-6 lg:px-8 lg:pb-10">
           <Outlet />
         </main>
       </div>
+      <MobileNav />
     </div>
   )
 }
