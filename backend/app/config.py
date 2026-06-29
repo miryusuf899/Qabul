@@ -4,7 +4,7 @@ from functools import lru_cache
 from typing import Annotated
 
 from pydantic import AnyUrl, BeforeValidator, Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 def _split_origins(value: str | list[str]) -> list[str]:
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     secret_key: str = "change_this_secret_key"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 1440
-    cors_origins: Annotated[list[str], BeforeValidator(_split_origins)] = Field(
+    cors_origins: Annotated[list[str], NoDecode, BeforeValidator(_split_origins)] = Field(
         default_factory=lambda: ["http://localhost:5173"]
     )
     ai_provider: str = "mock"
